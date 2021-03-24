@@ -9,6 +9,7 @@ import { DndDirective } from "./dnd.directive";
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule, MAT_RADIO_DEFAULT_OPTIONS} from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
+import { NgxPicaModule } from 'ng-pica';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     MatButtonModule,
     MatRadioModule,
-    FormsModule
+    FormsModule,
+    NgxPicaModule
     
   ],
   providers: [{

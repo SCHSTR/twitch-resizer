@@ -34,12 +34,12 @@
       </div>
     </div>
 
-    <div><button mat-raised-button class="default-button" (click)="clicarBotao()">Resize my Images!</button></div>
+    <div><button mat-raised-button class="default-button" (click)="clicarBotao(this.files)">Resize my Images!</button></div>
   </div>
 
   <div *ngIf="isImageResized == false">
     <div class="card-header">
-      <h1>Download now! 123
+      <h1>Download now!
       </h1>
     </div>
 
@@ -60,7 +60,7 @@
     </div>
 
     <div style="display: flex; justify-content: center; flex-direction:column;">
-      <button mat-raised-button class="default-button">Download my images!</button>
+      <button mat-raised-button class="default-button" (click)="submitImages()">Download my images!</button>
       <button mat-raised-button class="sub-button" (click)="uploadImages()">Or upload more images</button>
     </div>
   </div>

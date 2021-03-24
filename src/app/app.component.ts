@@ -1,35 +1,37 @@
-import { Component } from '@angular/core';
-
+import { Component, EventEmitter } from '@angular/core';
+import { NgxPicaErrorInterface, NgxPicaService } from 'ng-pica';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+  styleUrls: ['./app.component.sass'],
 })
-
 export class AppComponent {
   title = 'twitch-resizer';
 
-  files: any[] = []
-  value: any
+  files: any[] = [];
+  value: any;
 
-  imageTypeSelect: any
- 
-  badgeArray: number[] = [72, 36, 18]
-  emoteArray: number[] = [112, 56, 28]
-  isImageResized: boolean = true
+  imageTypeSelect: any;
+
+  badgeArray: number[] = [72, 36, 18];
+  emoteArray: number[] = [112, 56, 28];
+
+  isImageResized: boolean = true;
+
+  images: File[] = [];
 
   carregando: boolean = true;
   convertQueue: any[] = [];
   convertedImages: any[] = [];
 
+  constructor(private ngxPicaService: NgxPicaService) {}
 
   /**
    * on file drop handler
    */
-   onFileDropped(arquivos: any) {
-
-    console.log(this.files)
+  onFileDropped(arquivos: any) {
+    console.log(this.files);
 
     Array.from(arquivos).forEach((arquivo: any, arquivoIndex) => {
       const reader = new FileReader();
@@ -124,27 +126,106 @@ export class AppComponent {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
-  clicarBotao(){
-    
-    console.log(this.imageTypeSelect)
+  clicarBotao(arquivos: any) {
+    console.log(this.imageTypeSelect);
 
-    switch(this.imageTypeSelect){
+    switch (this.imageTypeSelect) {
       case undefined:
-        alert('Você precisa selecionar um tipo de renderização')
-      break;
+        alert('Você precisa selecionar um tipo de renderização');
+        break;
 
       case 'emote':
-        console.log(this.emoteArray)
+        console.log(this.emoteArray);
         this.isImageResized = !this.isImageResized;
-      break;
-    
+
+        this.emoteArray.forEach((emoteSize) => {
+          this.ngxPicaService
+            .resizeImages(arquivos, emoteSize, emoteSize, { alpha: true })
+            .subscribe(
+              (imageResized: File) => {
+                let reader: FileReader = new FileReader();
+
+                reader.addEventListener(
+                  'load',
+                  (event: any) => {
+                    this.images.push(event.target.result);
+                  },
+                  false
+                );
+
+                reader.readAsDataURL(imageResized);
+                reader.onload = () => {
+                  this.convertedImages.push(reader.result);
+                };
+              },
+              (err: NgxPicaErrorInterface) => {
+                throw err.err;
+              }
+            );
+        });
+
+        console.log(this.convertedImages);
+        break;
+
       case 'badge':
-        console.log(this.badgeArray)
+        console.log(this.badgeArray);
         this.isImageResized = !this.isImageResized;
-      break;
+        break;
     }
-  }  
-  uploadImages(){
+  }
+
+  submitImages() {
+    console.log('Botão pressionado!', this.convertedImages);
+
+    this.convertedImages.forEach((item) => {
+      
+      let base64 = item.split(',')
+
+      let byteCharacters = atob(base64[1])
+      let byteNumbers = new Array(byteCharacters.length)
+      var byteArray = new Uint8Array(byteNumbers)
+      let blob = new Blob([byteArray], {"type": "image/png"})
+
+      console.log(blob)
+
+    })
+
+    //this.ConvertedImages == array onde fica as imagens convertidas para base64 + tamanho certo
+    
+
+    // let splitConvertQueue = this.convertedImages[0].split(',')
+    // let byteCharacters = atob(splitConvertQueue[1])
+
+
+    // let byteNumbers = new Array(byteCharacters.length);
+    // for (var i = 0; i < byteCharacters.length; i++) {
+    //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+    // }
+
+    // var byteArray = new Uint8Array(byteNumbers);
+
+    // let blob = new Blob([byteArray], {"type": "image/png"});
+
+    // console.log(blob)
+      
+        // if(navigator.msSaveBlob){
+        //   let filename = 'file_name_here';
+        //   navigator.msSaveBlob(blob, filename);
+        // } else {
+        //   let link = document.createElement("a");
+
+        //   link.href = URL.createObjectURL(blob);
+
+        //   link.setAttribute('visibility','hidden');
+        //   link.download = 'fichier';
+
+        //   document.body.appendChild(link);
+        //   link.click();
+        //   document.body.removeChild(link);
+        // }
+  }
+
+  uploadImages() {
     this.isImageResized = !this.isImageResized;
   }
 }
