@@ -8,7 +8,7 @@
     <div class="dropzone" appDnd (fileDropped)="onFileDropped($event)">
       <input type="file" #fileDropRef id="fileDropRef" class="inputBox" multiple (change)="fileBrowseHandler($event)" />
       <img src="">
-      <h3>Drag and drop files<br>here or</h3>
+      <h3>Drag and drop your<br>files here</h3>
       <label for="fileDropRef" class="fileDropRefLabel">Browse for files</label>
     </div>
 
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div><button mat-raised-button class="default-button" (click)="clicarBotao(this.files)">Resize my Images!</button></div>
+    <div><button mat-raised-button class="default-button" (click)="clicarBotao(files)">Resize my Images!</button></div>
   </div>
 
   <div *ngIf="isImageResized == false">

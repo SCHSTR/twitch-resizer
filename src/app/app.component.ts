@@ -50,14 +50,13 @@ export class AppComponent {
         this.prepareFilesList(arquivos);
       }
     });
-
   }
 
   /**
    * handle file from browsing
    */
-  fileBrowseHandler(arquivos: any) {
-    Array.from(arquivos).forEach((arquivo: any, arquivoIndex) => {
+  fileBrowseHandler(fileList: any) {
+    Array.from(fileList.target.files).forEach((arquivo: any, arquivoIndex) => {
       const reader = new FileReader();
 
       reader.readAsDataURL(arquivo);
@@ -66,11 +65,10 @@ export class AppComponent {
         this.convertQueue.push(reader.result);
       };
 
-      if (arquivoIndex === arquivos.length - 1) {
-        this.prepareFilesList(arquivos);
+      if (arquivoIndex === fileList.target.files.length - 1) {
+        this.prepareFilesList(fileList.target.files);
       }
     });
-
     console.log(this.convertQueue);
   }
 
@@ -80,7 +78,7 @@ export class AppComponent {
    */
   deleteFile(index: any) {
     this.files.splice(index, 1);
-    this.convertQueue.splice(index, 1)
+    this.convertQueue.splice(index, 1);
   }
 
   /**
@@ -226,10 +224,10 @@ export class AppComponent {
 
   uploadImages() {
     this.isImageResized = !this.isImageResized;
-    
+
     this.files = [];
     this.base64 = [];
-    this.zipFiles= [];
+    this.zipFiles = [];
     this.images = [];
     this.convertQueue = [];
     this.convertedImages = [];
